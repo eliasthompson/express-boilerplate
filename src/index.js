@@ -1,3 +1,6 @@
 require('./models');
+const { app, router } = require('./routes');
 
-module.exports = require('./routes');
+app.use('/', router);
+
+app.listen(process.env.PORT || 8080);

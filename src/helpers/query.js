@@ -126,10 +126,11 @@ module.exports = {
       attributes: this.parseAttributes(options.attributes),
       include: this.parseInclude(options.join, availableJoins),
       limit: this.calculateLimit(options.limit),
-      offset: _.isUndefined(options.offset) ? 0 : options.offset,
+      offset: options.offset || 0,
       order: this.parseOrder(options.order),
       where: this.parseWhere(options.where, keyMap),
       subQuery: this.parseSubQuery(options.subQuery),
+      paranoid: options.paranoid || true,
     };
   },
 

@@ -9,7 +9,7 @@ module.exports = class BaseController {
    * @returns {object} returns the record
    */
   exists(record) {
-    if (_.isEmpty(record)) throw new NotFoundError('record');
+    if (_.isEmpty(record)) throw new NotFoundError('Record does not exist.');
     return record;
   }
 

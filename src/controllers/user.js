@@ -1,8 +1,9 @@
 const BaseController = require('./base');
 const db = require('../models');
 const { QueryError } = require('../helpers/query');
+const { ArgumentNullError } = require('common-errors');
 
-const { User, UserSettings, sequelize } = db;
+const { User, sequelize } = db;
 const { ValidationError } = sequelize;
 
 module.exports = class UserController extends BaseController {
@@ -20,41 +21,30 @@ module.exports = class UserController extends BaseController {
   }
 
   /**
-   * Search UserSettings
-   *  - Returns user settings for user
+   * Update/Creates User
    * @param req - HTTP Request
    * @param res - HTTP Response
    */
-  searchSettings(req, res) {
-    return UserSettings
-      .search(req.user.id)
-      .then(res.success)
-      .catch(res.serverError);
-  }
-
-  /**
-   * Update UserSettings
-   *  - Modifies/Creates the user settings
-   * @param req - HTTP Request
-   * @param res - HTTP Response
-   */
-  updateSettings(req, res) {
-    return UserSettings
-      .update(req.user.id, req.body)
-      .then(res.success)
-      .catch(ValidationError, res.pgValidationError)
-      .catch(res.serverError);
-  }
-
-  /**
-   * List User's Team Members
-   * @param req - HTTP Request
-   * @param res - HTTP Response
-   */
-  teamMembers(req, res) {
+  update(req, res) {
     return User
-      .getShareTargets(null, req.user.teams)
+      .update(req.body)
       .then(res.success)
+      .catch(ArgumentNullError, res.badRequest)
+      .catch(ValidationError, res.badRequest)
+      .catch(res.serverError);
+  }
+
+  /**
+   * Delete User
+   * @param req - HTTP Request
+   * @param res - HTTP Response
+   */
+  delete(req, res) {
+    return User
+      .delete(req.body)
+      .then(res.success)
+      .catch(ArgumentNullError, res.badRequest)
+      .catch(ValidationError, res.badRequest)
       .catch(res.serverError);
   }
 };

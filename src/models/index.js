@@ -7,15 +7,15 @@ const basename = path.basename(module.filename);
 
 const db = {
   Sequelize,
-  sequelize: new Sequelize(
-    process.env.PG_DATABASE || 'postgres',
-    process.env.PG_USERNAME || 'postgres',
-    process.env.PG_PASSWORD || 'postgres',
-    {
-      dialect: 'postgres',
-      host: process.env.PG_HOST || 'localhost',
-    },
-  ),
+  sequelize: new Sequelize({
+    dialect: 'postgres',
+    host: process.env.PG_HOST || 'localhost',
+    port: process.env.PG_PORT || 5432,
+    database: process.env.PG_DATABASE || 'postgres',
+    username: process.env.PG_USERNAME || 'postgres',
+    password: process.env.PG_PASSWORD || 'postgres',
+    // logging: false,
+  }),
 };
 
 function handleErrors(err) {
