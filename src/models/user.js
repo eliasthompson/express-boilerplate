@@ -1,9 +1,9 @@
 const _ = require('lodash');
-const BPromise = require('bluebird');
-const queryHelper = require('../helpers/query');
+const { compare, hash } = require('bcrypt');
+const { method, promisify } = require('bluebird');
 const { ArgumentNullError, NotFoundError } = require('common-errors');
 
-const { method } = BPromise;
+const queryHelper = require('../helpers/query');
 
 module.exports = (sequelize, DataTypes) => {
   const User = {};
@@ -52,6 +52,23 @@ module.exports = (sequelize, DataTypes) => {
         .catch(sequelize.DatabaseError, queryHelper.errorWrapper);
     });
 
+    User.check = method((payload = {}) => {
+      const data = _.pick(payload, [
+        'username',
+        'password',
+      ]);
+
+      if (!data.username || !data.username) throw new ArgumentNullError('username and password is required to check credentials.');
+
+      return UserModel
+        .findOne(queryHelper.buildQuery({ where: { username: data.username } }))
+        .then((result) => {
+          if (!result) throw new NotFoundError('Record not found.');
+          return promisify(compare)(data.password, result.password);
+        })
+        .catch(sequelize.DatabaseError, queryHelper.errorWrapper);
+    });
+
     User.update = method((payload = {}) => {
       const where = _.pick(payload, [
         'id',
@@ -69,14 +86,16 @@ module.exports = (sequelize, DataTypes) => {
 
       if (!_.size(where)) throw new ArgumentNullError('id, email, and/or username is required to update or create.');
 
-      return UserModel
-        .update(data, { where, returning: true })
+      return promisify(hash)(data.password, 8)
+        .then((hashedPassword) => { data.password = hashedPassword; })
+        .then(() => UserModel.update(data, { where, returning: true }))
         .spread((count, users) => {
           if (count < 1) throw new NotFoundError('Record not found.');
           return users;
         })
         .catch(NotFoundError, () => UserModel.create(data, { returning: true }))
-        .then(result => _.castArray(result));
+        .then(result => _.castArray(result))
+        .catch(sequelize.DatabaseError, queryHelper.errorWrapper);
     });
 
     User.delete = method((payload) => {
@@ -90,7 +109,8 @@ module.exports = (sequelize, DataTypes) => {
 
       return UserModel
         .destroy({ where })
-        .then(() => User.search({ where, paranoid: false }));
+        .then(() => User.search({ where, paranoid: false }))
+        .catch(sequelize.DatabaseError, queryHelper.errorWrapper);
     });
   };
 

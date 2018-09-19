@@ -3,7 +3,7 @@ const _ = require('lodash');
 const path = require('path');
 const Sequelize = require('sequelize');
 
-const basename = path.basename(module.filename);
+const { handleProcessError } = require('../helpers/handlers');
 
 const db = {
   Sequelize,
@@ -18,35 +18,27 @@ const db = {
   }),
 };
 
-function handleErrors(err) {
-  console.error(err.stack); // eslint-disable-line no-console
-  process.exit(1);
-}
-
 try {
-  // Read model definitions from the models dir
-  fs.readdirSync(__dirname)
-    .filter(file => ((file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js')))
+  fs
+    .readdirSync(__dirname)
+    .filter(file => ((file.indexOf('.') !== 0) && (file !== path.basename(module.filename)) && (file.slice(-3) === '.js')))
     .forEach((file) => {
       const modelDef = db.sequelize.import(path.join(__dirname, file));
       const modelName = _.camelCase(modelDef.model.name).substr(0, 1).toUpperCase() + _.camelCase(modelDef.model.name).substr(1);
       db[modelName] = modelDef;
     });
 
-  // Bind associations
   _.each(_.keys(db), (modelName) => {
     if (_.has(db[modelName], 'model.associate')) {
       db[modelName].model.associate(db);
     }
   });
 } catch (e) {
-  handleErrors(e);
+  handleProcessError(e);
 }
-
-// console.log(db);
 
 db.sequelize
   .authenticate()
-  .catch(handleErrors);
+  .catch(handleProcessError);
 
 module.exports = db;

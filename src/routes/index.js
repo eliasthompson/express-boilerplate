@@ -2,32 +2,21 @@ const express = require('express');
 // const cors = require('cors');
 const bodyParser = require('body-parser');
 const { NotFoundError } = require('common-errors');
-// const validateRequest = services.get('jwt').validateRequest;
+// const { validateRequest } = services.get('jwt');
 
-const { bindResponseFuctions } = require('../policies');
+const { bindResponseFuctions, updateUserLastSeenAt, validateRequest } = require('../policies');
 
 const router = express.Router();
 
 // router.use(cors());
 router.use(bodyParser.json());
-// router.use(validateRequest);
+router.use(validateRequest);
 router.use(bindResponseFuctions);
-// router.use(updateUserLastSeenAt);
+router.use(updateUserLastSeenAt);
 
 require('./user')(router);
 
-router.get('/', (req, res) => {
-  res.send({
-    status: 'success',
-    data: 'API Online',
-  });
-});
-
-router.use((req, res) => {
-  res.status(404).send({
-    status: 'error',
-    data: (new NotFoundError('Route does not exist.')).message,
-  });
-});
+router.get('/', (req, res) => res.success('API Online'));
+router.use((req, res) => res.notFound(new NotFoundError('Route does not exist.')));
 
 module.exports = { app: express(), router };

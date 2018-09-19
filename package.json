@@ -21,7 +21,8 @@
     "url": "git+https://github.com/eliasthompson/express-boilerplate.git"
   },
   "scripts": {
-    "start": "node ./src/index.js"
+    "start": "npm run dev",
+    "dev": "nodemon --watch ./src"
   },
   "devDependencies": {
     "chai": "^3.5.0",
@@ -42,6 +43,7 @@
     "sinon-chai": "^2.8.0"
   },
   "dependencies": {
+    "bcrypt": "^3.0.0",
     "bluebird": "^3.3.4",
     "body-parser": "^1.15.0",
     "common-errors": "^1.0.0",

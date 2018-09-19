@@ -1,7 +1,8 @@
 const BaseController = require('./base');
+const { ArgumentNullError, NotFoundError } = require('common-errors');
+
 const db = require('../models');
 const { QueryError } = require('../helpers/query');
-const { ArgumentNullError } = require('common-errors');
 
 const { User, sequelize } = db;
 const { ValidationError } = sequelize;
@@ -20,6 +21,17 @@ module.exports = class UserController extends BaseController {
       .catch(res.serverError);
   }
 
+  check(req, res) {
+    return User
+      .check(req.body)
+      .then(res.success)
+      .catch(ArgumentNullError, res.badRequest)
+      .catch(ValidationError, res.badRequest)
+      .catch(QueryError, res.badRequest)
+      .catch(NotFoundError, res.notFound)
+      .catch(res.serverError);
+  }
+
   /**
    * Update/Creates User
    * @param req - HTTP Request
@@ -31,6 +43,8 @@ module.exports = class UserController extends BaseController {
       .then(res.success)
       .catch(ArgumentNullError, res.badRequest)
       .catch(ValidationError, res.badRequest)
+      .catch(QueryError, res.badRequest)
+      .catch(NotFoundError, res.notFound)
       .catch(res.serverError);
   }
 
@@ -45,6 +59,7 @@ module.exports = class UserController extends BaseController {
       .then(res.success)
       .catch(ArgumentNullError, res.badRequest)
       .catch(ValidationError, res.badRequest)
+      .catch(QueryError, res.badRequest)
       .catch(res.serverError);
   }
 };

@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const { handleProcessError } = require('../helpers/handlers');
+
 const policies = {};
 
 try {
@@ -11,8 +13,7 @@ try {
       policies[file.split('.')[0]] = require(`./${file}`); // eslint-disable-line import/no-dynamic-require, global-require
     });
 } catch (e) {
-  console.error(e.stack); // eslint-disable-line no-console
-  process.exit(1);
+  handleProcessError(e);
 }
 
 module.exports = policies;
