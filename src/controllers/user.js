@@ -1,5 +1,5 @@
 const BaseController = require('./base');
-const { ArgumentNullError, NotFoundError } = require('common-errors');
+const { ArgumentNullError, AuthenticationRequiredError, NotFoundError } = require('common-errors');
 
 const db = require('../models');
 const { QueryError } = require('../helpers/query');
@@ -21,14 +21,15 @@ module.exports = class UserController extends BaseController {
       .catch(res.serverError);
   }
 
-  check(req, res) {
+  login(req, res) {
     return User
-      .check(req.body)
+      .login(req.body)
       .then(res.success)
+      .catch(AuthenticationRequiredError, res.badRequest)
       .catch(ArgumentNullError, res.badRequest)
       .catch(ValidationError, res.badRequest)
+      .catch(NotFoundError, res.badRequest)
       .catch(QueryError, res.badRequest)
-      .catch(NotFoundError, res.notFound)
       .catch(res.serverError);
   }
 
@@ -43,8 +44,8 @@ module.exports = class UserController extends BaseController {
       .then(res.success)
       .catch(ArgumentNullError, res.badRequest)
       .catch(ValidationError, res.badRequest)
+      .catch(NotFoundError, res.badRequest)
       .catch(QueryError, res.badRequest)
-      .catch(NotFoundError, res.notFound)
       .catch(res.serverError);
   }
 

@@ -1,3 +1,4 @@
+require('dotenv').config();
 require('./models');
 const { app, router } = require('./routes');
 

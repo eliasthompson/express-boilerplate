@@ -1,7 +1,8 @@
 const _ = require('lodash');
+const jwt = require('jsonwebtoken');
 const { compare, hash } = require('bcrypt');
 const { method, promisify } = require('bluebird');
-const { ArgumentNullError, NotFoundError } = require('common-errors');
+const { ArgumentNullError, AuthenticationRequiredError, NotFoundError } = require('common-errors');
 
 const queryHelper = require('../helpers/query');
 
@@ -52,10 +53,11 @@ module.exports = (sequelize, DataTypes) => {
         .catch(sequelize.DatabaseError, queryHelper.errorWrapper);
     });
 
-    User.check = method((payload = {}) => {
+    User.login = method((payload = {}) => {
       const data = _.pick(payload, [
         'username',
         'password',
+        'remember',
       ]);
 
       if (!data.username || !data.username) throw new ArgumentNullError('username and password is required to check credentials.');
@@ -63,9 +65,22 @@ module.exports = (sequelize, DataTypes) => {
       return UserModel
         .findOne(queryHelper.buildQuery({ where: { username: data.username } }))
         .then((result) => {
-          if (!result) throw new NotFoundError('Record not found.');
-          return promisify(compare)(data.password, result.password);
+          if (!result) throw new NotFoundError('We could not find that username.');
+          return result;
         })
+        .then((result) => {
+          return compare(data.password, result.password)
+            .then((auth) => {
+              if (!auth) throw new AuthenticationRequiredError('Incorrect password.');
+              return result;
+            });
+        })
+        .then(result => promisify(jwt.sign)({
+          id: result.id,
+          name: result.name,
+          email: result.email,
+          username: result.username,
+        }, process.env.JWT_SECRET))
         .catch(sequelize.DatabaseError, queryHelper.errorWrapper);
     });
 
@@ -86,7 +101,7 @@ module.exports = (sequelize, DataTypes) => {
 
       if (!_.size(where)) throw new ArgumentNullError('id, email, and/or username is required to update or create.');
 
-      return promisify(hash)(data.password, 8)
+      return hash(data.password, 8)
         .then((hashedPassword) => { data.password = hashedPassword; })
         .then(() => UserModel.update(data, { where, returning: true }))
         .spread((count, users) => {

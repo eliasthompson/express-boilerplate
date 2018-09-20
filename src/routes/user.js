@@ -4,7 +4,7 @@ module.exports = function route(router) {
   const controller = new UserController();
 
   router.get('/users', controller.search.bind(controller));
-  router.post('/check', controller.check.bind(controller));
+  router.post('/login', controller.login.bind(controller));
   router.put('/user', controller.update.bind(controller));
   router.delete('/user', controller.delete.bind(controller));
 
