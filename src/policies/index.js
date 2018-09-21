@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const { handleProcessError } = require('../helpers/handlers');
+const { handleProcessError } = require('../lib/handlers');
 
 const policies = {};
 

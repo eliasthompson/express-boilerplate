@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "description": "An Express boilerplate to handle getting started on most applications.",
   "keywords": [
+    "boilerplate",
+    "esdoc",
+    "eslint",
     "express",
-    "sequelize",
-    "boilerplate"
+    "mocha",
+    "sequelize"
   ],
   "homepage": "https://github.com/eliasthompson/express-boilerplate",
   "bugs": "https://github.com/eliasthompson/express-boilerplate/issues",

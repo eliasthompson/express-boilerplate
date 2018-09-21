@@ -1,6 +1,6 @@
 const { method } = require('bluebird');
 
-const { handleProcessError } = require('../helpers/handlers');
+const { handleProcessError } = require('../lib/handlers');
 
 module.exports = (req, res, next) => {
   const bindResponsesFunctions = method(() => {

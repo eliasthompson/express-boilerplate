@@ -4,7 +4,7 @@ const { compare, hash } = require('bcrypt');
 const { method, promisify } = require('bluebird');
 const { ArgumentNullError, AuthenticationRequiredError, NotFoundError } = require('common-errors');
 
-const queryHelper = require('../helpers/query');
+const queryHelper = require('../lib/query');
 
 module.exports = (sequelize, DataTypes) => {
   const User = {};
@@ -52,7 +52,6 @@ module.exports = (sequelize, DataTypes) => {
       const data = _.pick(payload, [
         'username',
         'password',
-        'remember',
       ]);
 
       if (!data.username || !data.username) throw new ArgumentNullError('username and password is required to check credentials.');

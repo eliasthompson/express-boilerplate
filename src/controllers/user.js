@@ -2,7 +2,7 @@ const BaseController = require('./base');
 const { ArgumentNullError, AuthenticationRequiredError, NotFoundError } = require('common-errors');
 
 const db = require('../models');
-const { QueryError } = require('../helpers/query');
+const { QueryError } = require('../lib/query');
 
 const { User, sequelize } = db;
 const { ValidationError } = sequelize;

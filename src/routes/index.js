@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { NotFoundError } = require('common-errors');
-// const { validateRequest } = services.get('jwt');
 
 const { bindResponseFuctions, updateUserLastSeenAt, validateRequest } = require('../policies');
 
@@ -10,6 +9,7 @@ const router = express.Router();
 
 router.use(cors());
 router.use(bodyParser.json());
+
 router.use(validateRequest);
 router.use(bindResponseFuctions);
 router.use(updateUserLastSeenAt);

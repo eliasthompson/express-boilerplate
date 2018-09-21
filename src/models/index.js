@@ -3,7 +3,7 @@ const _ = require('lodash');
 const path = require('path');
 const Sequelize = require('sequelize');
 
-const { handleProcessError } = require('../helpers/handlers');
+const { handleProcessError } = require('../lib/handlers');
 
 const db = {
   Sequelize,
