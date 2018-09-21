@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     password: { type: DataTypes.TEXT, allowNull: false, validate: { notEmpty: true } },
     firstName: { type: DataTypes.TEXT },
     lastName: { type: DataTypes.TEXT },
+    settings: { type: DataTypes.JSON, allowNull: false, validate: { notEmpty: true } },
     lastSeenAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, validate: { isDate: true } },
     createdAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, validate: { isDate: true } },
     updatedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW, validate: { isDate: true } },
@@ -28,15 +29,9 @@ module.exports = (sequelize, DataTypes) => {
     freezeTableName: true,
     getterMethods: {
       name() {
-        if (this.firstName && this.lastName) {
-          return `${this.firstName} ${this.lastName}`;
-        } else if (this.firstName || this.lastName) {
-          return this.firstName || this.lastName;
-        } else if (this.username) {
-          return this.username;
-        }
-
-        return undefined;
+        if (this.firstName && this.lastName) return `${this.firstName} ${this.lastName}`;
+        else if (this.firstName || this.lastName) return this.firstName || this.lastName;
+        return this.username;
       },
     },
   });
@@ -75,12 +70,17 @@ module.exports = (sequelize, DataTypes) => {
               return result;
             });
         })
-        .then(result => promisify(jwt.sign)({
-          id: result.id,
-          name: result.name,
-          email: result.email,
-          username: result.username,
-        }, process.env.JWT_SECRET))
+        .then((result) => {
+          return promisify(jwt.sign)({
+            id: result.id,
+            name: result.name,
+            email: result.email,
+            username: result.username,
+            firstName: result.username,
+            lastName: result.username,
+          }, process.env.JWT_SECRET)
+            .then(token => ({ token, settings: result.settings }));
+        })
         .catch(sequelize.DatabaseError, queryHelper.errorWrapper);
     });
 
@@ -96,20 +96,30 @@ module.exports = (sequelize, DataTypes) => {
           'password',
           'firstName',
           'lastName',
+          'settings',
         ]),
       };
+      let beginUpdate = method(() => {
+        return UserModel.update(data, { where, returning: true });
+      });
 
       if (!_.size(where)) throw new ArgumentNullError('id, email, and/or username is required to update or create.');
 
-      return hash(data.password, 8)
-        .then((hashedPassword) => { data.password = hashedPassword; })
-        .then(() => UserModel.update(data, { where, returning: true }))
+      if (data.password) {
+        beginUpdate = method(() => {
+          return hash(data.password, 8)
+            .then((hashedPassword) => { data.password = hashedPassword; })
+            .then(() => UserModel.update(data, { where, returning: true }));
+        });
+      }
+
+      return beginUpdate()
         .spread((count, users) => {
           if (count < 1) throw new NotFoundError('Record not found.');
           return users;
         })
-        .catch(NotFoundError, () => UserModel.create(data, { returning: true }))
-        .then(result => _.castArray(result))
+        // .catch(NotFoundError, () => UserModel.create(data, { returning: true }))
+        // .then(result => _.castArray(result))
         .catch(sequelize.DatabaseError, queryHelper.errorWrapper);
     });
 
