@@ -11,6 +11,5 @@ module.exports = {
     'max-len': 'off',
     'no-underscore-dangle': 0,
     'object-curly-newline': ['error', { 'multiline': true, 'minProperties': 10, 'consistent': true }],
-    'linebreak-style': 'off'
   },
 };

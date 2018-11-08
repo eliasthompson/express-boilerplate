@@ -1,28 +1,19 @@
 const expect = require('chai').expect;
 const sinon = require('sinon');
 const db = require('../src/models');
-const { User } = db;
-const winston = require('winston');
+const config = require('config').get('development.logger');
 
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.json(),
-  transports: [
-    //
-    // - Write all logs error (and below) to `error.log`.
-    //
-    new winston.transports.File({
-      filename: '/Users/kjeter/Sites/info.log',
-      level: 'info',
-    }),
-  ],
-});
-
-logger.info(`User object: ${User}`);
+const {
+  User,
+} = db;
+const logger = require('../utils/logger')
+  .getLogger(config);
 
 describe('User functionality', () => {
   it('should be a model object', async () => {
     const UserModel = await User;
+
+    logger.info(`UserModel: ${UserModel}`);
 
     sinon.stub(UserModel, 'search');
     sinon.stub(UserModel, 'login');
