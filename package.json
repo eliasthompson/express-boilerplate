@@ -25,7 +25,8 @@
   },
   "scripts": {
     "start": "npm run dev",
-    "dev": "nodemon --watch ./src"
+    "dev": "nodemon --watch ./src",
+    "test": "node --inspect node_modules/mocha/bin/_mocha --watch --no-timeouts"
   },
   "devDependencies": {
     "chai": "^3.5.0",
