@@ -1,13 +1,10 @@
-const expect = require('chai').expect;
+const { expect } = require('chai');
 const sinon = require('sinon');
-const db = require('../src/models');
+const db = require('../../src/models');
 const config = require('config').get('development.logger');
 
-const {
-  User,
-} = db;
-const logger = require('../utils/logger')
-  .getLogger(config);
+const { User } = db;
+const logger = require('../../utils/logger').getLogger(config);
 
 describe('User functionality', () => {
   it('should be a model object', async () => {

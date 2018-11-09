@@ -27,7 +27,7 @@
     "start": "npm run dev",
     "dev": "nodemon --watch ./src",
     "lint": "eslint \"./*.js\" \"./**/*.js\"",
-    "test": "npm run lint --silent && ./node_modules/mocha/bin/_mocha",
+    "test": "npm run lint --silent && ./node_modules/mocha/bin/_mocha --opts ./test/mocha.opts",
     "test:watch": "nodemon --ext .js -w ./src/ -w ./test/ --exec \"npm run test --silent || true\""
   },
   "devDependencies": {
