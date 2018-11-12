@@ -1,6 +1,6 @@
 const winston = require('winston');
 
-class Logger {
+module.exports = {
   getLogger(options) {
     return winston.createLogger({
       level: options.level,
@@ -12,7 +12,5 @@ class Logger {
         }),
       ],
     });
-  }
-}
-
-module.exports = new Logger();
+  },
+};

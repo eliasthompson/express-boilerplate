@@ -10,10 +10,6 @@
                 "user":"itsupport@evgo.com",
                 "password":"EVgo2017!"
             }
-        },
-        "logger": {
-            "filePath": "/Users/kjeter/Sites/express-boilerplate/utils/logs/log.txt",
-            "level": "info"
         }
     }
 } 

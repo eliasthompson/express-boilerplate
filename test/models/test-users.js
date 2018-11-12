@@ -1,22 +1,19 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 const db = require('../../src/models');
-const config = require('config').get('development.logger');
 
 const { User } = db;
-const logger = require('../../utils/logger').getLogger(config);
+const logger = require('../../src/lib/utils/logger')
+  .getLogger({ filePath: '../../src/lib/utils/logs/log.txt', level: 'info' });
 
 describe('User functionality', () => {
-  it('should be a model object', async () => {
-    const UserModel = await User;
+  it('should be a model object', () => {
+    logger.info(`UserModel: ${User.model}`);
 
-    logger.info(`UserModel: ${UserModel}`);
+    sinon.stub(User.model, 'findAll');
+    sinon.stub(User.model, 'findOne');
+    sinon.stub(User.model, 'update');
 
-    sinon.stub(UserModel, 'search');
-    sinon.stub(UserModel, 'login');
-    sinon.stub(UserModel, 'update');
-    sinon.stub(UserModel, 'delete');
-
-    expect(UserModel).to.be.a('Object');
+    expect(User.model);
   });
 });
