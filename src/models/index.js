@@ -11,9 +11,9 @@ const db = {
     dialect: 'postgres',
     host: process.env.PG_HOST || 'localhost',
     port: process.env.PG_PORT || 5432,
-    database: process.env.PG_DATABASE || 'postgres',
+    database: process.env.PG_DATABASE || 'express-boilerplate',
     username: process.env.PG_USERNAME || 'postgres',
-    password: process.env.PG_PASSWORD || 'postgres',
+    password: process.env.PG_PASSWORD || '',
     // logging: false,
   }),
 };

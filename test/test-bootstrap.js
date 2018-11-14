@@ -2,6 +2,7 @@ const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const sinonChai = require('sinon-chai');
 const nock = require('nock');
+require('../src/index');
 
 before(function () {
   chai.should();
