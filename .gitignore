@@ -26,4 +26,4 @@ build/Release
 *.tgz
 package.json.bak
 docs/
-src/liblogs/
+logs/

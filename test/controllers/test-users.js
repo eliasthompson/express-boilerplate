@@ -21,7 +21,31 @@ describe('Get list of users', () => {
         status: 500,
       },
     };
-    logger.info(`userController ${await userController.search(req, res)}`);
-    expect(await userController.search({}, res)).to.be.an('array').that.is.not.empty;
+    logger.info(await userController.search(req, res));
+    expect(await userController.search(req, res)).to.be.an('array').that.is.not.empty;
+  });
+});
+
+describe('user update', () => {
+  it('user should be able to login', async () => {
+    const req = {
+      body: {
+        username: 'kylethejete',
+        email: 'kyle.jeter@evgo.com',
+        firstName: 'kyle',
+        lastName: 'jete',
+        password: 'test1234',
+        settings: { lang: 'en' },
+      },
+    };
+    const res = {
+      success: {
+        status: 200,
+      },
+      badRequest: {
+        status: 500,
+      },
+    };
+    expect(await userController.update(req, res));
   });
 });

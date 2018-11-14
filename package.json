@@ -42,14 +42,16 @@
     "mocha": "^5.2.0",
     "nock": "^9.0.2",
     "nodemon": "^1.11.0",
-    "require-dir": "^0.3.0"
+    "require-dir": "^0.3.0",
+    "sinon": "^4.0.0",
+    "sinon-chai": "^2.8.0",
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0"
   },
   "dependencies": {
     "bcrypt": "^3.0.0",
     "bluebird": "^3.3.4",
     "body-parser": "^1.15.0",
-    "chai": "^3.5.0",
-    "chai-as-promised": "^6.0.0",
     "common-errors": "^1.0.0",
     "cors": "^2.7.1",
     "express": "^4.16.3",
@@ -58,8 +60,7 @@
     "nodemailer": "^4.6.8",
     "pg": "^6.2.4",
     "sequelize": "^4.7.4",
-    "sinon": "^4.0.0",
-    "sinon-chai": "^2.8.0",
+    
     "winston": "^3.1.0"
   }
 }
