@@ -1,8 +1,6 @@
 const { expect } = require('chai');
 const UserController = require('../../src/controllers/user');
 const logger = require('../../src/lib/utils/logger')
-
-
   .getLogger({
     filePath: './logs/log.txt',
     level: 'info',
