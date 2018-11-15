@@ -1,16 +1,10 @@
-const { expect } = require('chai');
 const sinon = require('sinon');
 const UserController = require('../../src/controllers/user');
-const logger = require('../../src/lib/utils/logger')
-  .getLogger({
-    filePath: './logs/log.txt',
-    level: 'info',
-  });
 
 const userController = new UserController();
 
 describe('Get list of users', () => {
-  it('should be a list of users', async () => {
+  it('should be able to retrieve a  list of users', () => {
     const req = {
       query: {},
     };
@@ -22,13 +16,16 @@ describe('Get list of users', () => {
         status: 500,
       },
     };
-    logger.info(await userController.search(req, res));
-    expect(await userController.search(req, res)).to.be.an('array').that.is.not.empty;
+
+    const search = sinon.stub(userController, 'search');
+    search(req, res);
+    search.restore();
+    sinon.assert.calledWith(search, req, res);
   });
 });
 
 describe('user update', () => {
-  it('should be able to save/update user', async () => {
+  it('should be able to save/update user', () => {
     const req = {
       body: {
         username: 'kylethejete',
@@ -49,7 +46,8 @@ describe('user update', () => {
     };
 
     const update = sinon.stub(userController, 'update');
-    expect(await update(req, res));
+    update(req, res);
+    sinon.assert.calledWith(update, req, res);
     update.restore();
   });
 });
