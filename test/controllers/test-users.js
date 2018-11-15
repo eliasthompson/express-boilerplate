@@ -1,4 +1,5 @@
 const { expect } = require('chai');
+const sinon = require('sinon');
 const UserController = require('../../src/controllers/user');
 const logger = require('../../src/lib/utils/logger')
   .getLogger({
@@ -27,7 +28,7 @@ describe('Get list of users', () => {
 });
 
 describe('user update', () => {
-  it('user should be able to login', async () => {
+  it('should be able to save/update user', async () => {
     const req = {
       body: {
         username: 'kylethejete',
@@ -46,6 +47,9 @@ describe('user update', () => {
         status: 500,
       },
     };
-    expect(await userController.update(req, res));
+
+    const update = sinon.stub(userController, 'update');
+    expect(await update(req, res));
+    update.restore();
   });
 });
