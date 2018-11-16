@@ -51,3 +51,28 @@ describe('user update', () => {
     update.restore();
   });
 });
+
+describe('user login', () => {
+  it('user should be able to login', () => {
+    const req = {
+      body: {
+        username: 'kylethejete',
+        password: 'test1234',
+        settings: { lang: 'en' },
+      },
+    };
+    const res = {
+      success: {
+        status: 200,
+      },
+      badRequest: {
+        status: 500,
+      },
+    };
+
+    const update = sinon.stub(userController, 'update');
+    update(req, res);
+    sinon.assert.calledWith(update, req, res);
+    update.restore();
+  });
+});
