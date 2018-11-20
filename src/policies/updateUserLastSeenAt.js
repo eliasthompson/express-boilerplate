@@ -4,8 +4,7 @@ const { handleProcessError } = require('../lib/handlers');
 
 module.exports = (req, res, next) => {
   const updateUserLastSeenAt = method(() => {
-    console.log('i   s e e   y o u');
-
+    console.log('user seen');
     return 'something later';
   });
 

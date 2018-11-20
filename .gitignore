@@ -26,3 +26,4 @@ build/Release
 *.tgz
 package.json.bak
 docs/
+logs/
